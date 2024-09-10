@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        table {
+            text-align: center;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+        }
+        input, button {
+            padding: 20px 20Spx;
+            margin: 10px;
+            border: 10px solid #ccc;
+            border-radius: 8px;
+        }
+        #ERR {
+            color: rgb(53, 20, 20);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div align="center">
+        <h1>Grade Calculator</h1>
+
+        <form id="activityForm">
+            <label>Activity</label>
+            <input type="text" id="activity" required>
+            <label>Weight</label>
+            <input type="number" id="weight" min="1" max="100" required>
+            <button type="button" onclick="addActivity()">Add Activity</button>
+        </form>
+
+        <form id="gradeForm">
+            <label>Activity No</label>
+            <input type="number" id="activityNo" min="1" required>
+            <label>Grade</label>
+            <input type="number" id="grade" min="0" max="100" required>
+            <button type="button" onclick="addGrade()">Add Grade</button>
+        </form>
+
+        <button onclick="deleteActivity()">Delete Activity</button>
+
+        <table border="1" id="theTable" style="width:70%">
+            <tr>
+                <th>No</th>
+                <th>Activity</th>
+                <th>Weight</th>
+                <th>Grade</th>
+            </tr>
+        </table>
+        <p id="ERR">Error Message:</p>
+    </div>
+
+<script>
+    let noActivity = 0;
+    const table = document.getElementById("theTable");
+    const errorElement = document.getElementById("ERR");
+
+    function showError(message) {
+        errorElement.textContent = `Error Message: ${message}`;
+    }
+
+    function clearError() {
+        errorElement.textContent = "Error Message:";
+    }
+
+    function addActivity() {
+        clearError();
+
+        const activity = document.getElementById("activity").value.trim();
+        const weight = document.getElementById("weight").value.trim();
+
+        if (!activity) {
+            showError("Activity name is rejected.");
+            return;
+        }
+        if (!weight || weight < 1 || weight > 100) {
+            showError("Weight is rejected.");
+            return;
+        }
+
+        noActivity++;
+        const newRow = table.insertRow();
+        newRow.insertCell(0).textContent = noActivity;
+        newRow.insertCell(1).textContent = activity;
+        newRow.insertCell(2).textContent = weight;
+        newRow.insertCell(3).textContent = "";
+
+        document.getElementById("activityForm").reset();
+    }
+
+    function addGrade() {
+        clearError();
+
+        const activityNo = document.getElementById("activityNo").value;
+        const grade = document.getElementById("grade").value;
+
+        if (!activityNo || activityNo > noActivity || activityNo < 1) {
+            showError("Activity No is rejected.");
+            return;
+        }
+        if (!grade || grade < 0 || grade > 100) {
+            showError("Grade is rejected.");
+            return;
+        }
+
+        const row = table.rows[activityNo];
+        row.cells[3].textContent = grade;
+
+        document.getElementById("gradeForm").reset();
+    }
+
+    function deleteActivity() {
+        clearError();
+        if (noActivity > 0) {
+            table.deleteRow(noActivity);
+            noActivity--;
+        } else {
+            showError("No more activities to remove.");
+        }
+    }
+</script>
+</body>
+</html>
